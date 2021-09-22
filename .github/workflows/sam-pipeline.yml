@@ -22,4 +22,4 @@ jobs:
  
  
 # sam deploy
-      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name SBC-RT --s3-bucket https://s3.ca-central-1.amazonaws.com/gdx-analytics-sbc-rt-lambda  --capabilities CAPABILITY_IAM --region ca-central-1
+      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name SBC-RT --s3-bucket https://s3.ca-central-1.amazonaws.com/sp-ca-bc-gov-131565110619-12-serverless  --capabilities CAPABILITY_IAM --region ca-central-1
