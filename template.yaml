@@ -11,7 +11,7 @@ Globals:
     Timeout: 3
 
 Resources:
-  SBC-RTFunction:
+  SBCRTFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       CodeUri: sbc-rt/
@@ -28,12 +28,12 @@ Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  SBC-RTApi:
+  SBCRTApi:
     Description: "API Gateway endpoint URL for Prod stage for SBC-RT function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
-  HelloWorldFunction:
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/sbc-rt/"
+  SBCRTFunction:
     Description: "SBC-RT Lambda Function ARN"
     Value: !GetAtt SBC-RTFunction.Arn
-  HelloWorldFunctionIamRole:
+  SBCRTFunctionIamRole:
     Description: "Implicit IAM Role created for SBC-RT function"
     Value: !GetAtt SBC-RTFunctionRole.Arn
