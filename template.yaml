@@ -33,7 +33,7 @@ Outputs:
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/sbc-rt/"
   LambdaFunction:
     Description: "SBC RT Lambda Function ARN"
-    Value: !GetAtt SBCRTFunction.Arn
+    Value: !GetAtt LambdaFunction.Arn
   LambdaFunctionIamRole:
     Description: "Implicit IAM Role created for SBC RT function"
-    Value: !GetAtt SBCRTFunctionRole.Arn
+    Value: !GetAtt LambdaFunctionRole.Arn
