@@ -11,7 +11,7 @@ Globals:
     Timeout: 3
 
 Resources:
-  SBCRTFunction:
+  LambdaFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       CodeUri: sbc-rt/
@@ -31,9 +31,9 @@ Outputs:
   SBCRTApi:
     Description: "API Gateway endpoint URL for Prod stage for SBC RT function"
     Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/sbc-rt/"
-  SBCRTFunction:
+  LambdaFunction:
     Description: "SBC RT Lambda Function ARN"
     Value: !GetAtt SBCRTFunction.Arn
-  SBCRTFunctionIamRole:
+  LambdaFunctionIamRole:
     Description: "Implicit IAM Role created for SBC RT function"
     Value: !GetAtt SBCRTFunctionRole.Arn
