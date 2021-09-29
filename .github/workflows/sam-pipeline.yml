@@ -22,4 +22,4 @@ jobs:
  
  
 # sam deploy
-      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name SBC-RT --s3-bucket gdxdsd-3905-serverless --s3-prefix SBC-RT/  --capabilities CAPABILITY_IAM --region ca-central-1
+      - run: sam deploy --no-confirm-changeset --no-fail-on-empty-changeset --stack-name SBC-RT --s3-bucket gdxdsd-3905-serverless --s3-prefix SBC-RT  --capabilities CAPABILITY_IAM --region ca-central-1
