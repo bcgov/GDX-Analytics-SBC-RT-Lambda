@@ -15,7 +15,7 @@ Resources:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
       CodeUri: SBC-RT/
-      Handler: lambda_handler
+      Handler: app.lambda_handler
       Runtime: python3.7
       Events:
         SBCRT:
@@ -30,7 +30,7 @@ Outputs:
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
   SBCRTApi:
     Description: "API Gateway endpoint URL for Prod stage for SBC RT function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/sbc-rt/"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/SBC-RT/"
   LambdaFunction:
     Description: "SBC RT Lambda Function ARN"
     Value: !GetAtt LambdaFunction.Arn
