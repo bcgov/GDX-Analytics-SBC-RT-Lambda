@@ -16,6 +16,8 @@ Resources:
     Properties:
       CodeUri: SBC-RT/
       Handler: app.lambda_handler
+      Layers:
+        - !Ref psycopg2
       Runtime: python3.8
       Events:
         SBCRT:
