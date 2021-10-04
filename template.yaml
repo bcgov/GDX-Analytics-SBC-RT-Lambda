@@ -17,7 +17,7 @@ Resources:
       CodeUri: SBC-RT/
       Handler: app.lambda_handler
       Layers:
-        - arn:aws:lambda:ca-central-1:444682994021:layer:pyscopg2:1 # layer for python3.8 compatible psycopg2 library
+        - arn:aws:lambda:ca-central-1:444682994021:layer:psycopg2:1 # layer for python3.8 compatible psycopg2 library
       Runtime: python3.8
       Events:
         SBCRT:
