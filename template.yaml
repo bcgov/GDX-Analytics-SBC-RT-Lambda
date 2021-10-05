@@ -19,20 +19,11 @@ Resources:
       Layers:
         - arn:aws:lambda:ca-central-1:131565110619:layer:psycopg2:1 # layer for python3.8 compatible psycopg2 library
       Runtime: python3.8
-      Events:
-        SBCRT:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-          Properties:
-            Path: /SBC-RT
-            Method: get
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
   # Find out more about other implicit resources you can reference within SAM
   # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  SBCRTApi:
-    Description: "API Gateway endpoint URL for Prod stage for SBC RT function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/SBC-RT/"
   LambdaFunction:
     Description: "SBC RT Lambda Function ARN"
     Value: !GetAtt LambdaFunction.Arn
