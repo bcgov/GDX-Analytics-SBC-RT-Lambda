@@ -65,7 +65,7 @@ def lambda_handler(event, context):
         "headers": {"content-type": "application/json"},
         "body": json.dumps({
             "api_name": "sbc-wt",
-            "api_env": "test",
+            "api_env": "production",
             "api_version": "0.1",
             "response_tstamp": datetime.datetime.now(),
             "results_count": len(office_ids),
