@@ -17,7 +17,9 @@ Resources:
       CodeUri: SBC-RT/
       Handler: app.lambda_handler
       Layers:
-        - arn:aws:lambda:ca-central-1:131565110619:layer:psycopg2:1 # layer for python3.8 compatible psycopg2 library
+        - arn:aws:lambda:ca-central-1:131565110619:layer:psycopg2:1     # Layer for python3.8 compatible psycopg2 library
+        - arn:aws:lambda:ca-central-1:131565110619:layer:matplotlib:2 $ # Layer for python3.8 compatible matplotlib library
+        - arn:aws:lambda:ca-central-1:778625758767:layer:AWSLambda-Python38-SciPy1x:29 # AWS Layer for scipy/numpy
       Runtime: python3.8
 
 Outputs:
