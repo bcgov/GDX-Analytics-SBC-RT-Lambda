@@ -6,6 +6,7 @@ import os
 import sys
 import psycopg2
 import datetime
+import matplotlib
 
 
 # Assign credentials and collector information
@@ -16,6 +17,7 @@ REDSHIFT_USER = os.environ['REDSHIFT_USER']
 REDSHIFT_PASSWD = os.environ['REDSHIFT_PASSWD']
 REDSHIFT_PORT = os.environ['REDSHIFT_PORT']
 REDSHIFT_ENDPOINT = os.environ['REDSHIFT_ENDPOINT']
+
 
 with open('./serviceBCOfficeList.json') as json_file:
     # Get the list of Service Centers and their IDs
@@ -59,11 +61,26 @@ def lambda_handler(event, context):
             
         api_response_data.append({"office_id": office_id, "current_line_length": current_line_length, "estimated_wait": estimated_wait })
 
-    # Return the API response data
-    return {
-        "statusCode": 200,
-        "headers": {"content-type": "application/json"},
-        "body": json.dumps({
+
+    vis = ''
+    # Check if the api was querise for an visualization (html) response 
+    if 'queryStringParameters' in event and 'vis' in event['queryStringParameters'] and event['queryStringParameters']['vis'].lower() == 'true':
+        vis = True
+
+    return generate_api_response(office_ids,api_response_data,vis)
+
+    
+# Generate either a JSON response or a html response based on the 
+# query string parameters
+def generate_api_response(office_ids,api_response_data,vis):
+    # check if this is a visualization request
+    headers = ''
+    body = ''
+    if vis:
+        body = build_wait_times_graph(api_response_data)
+        headers = {"content-type": "text/html"}
+    else:
+        body = json.dumps({
             "api_name": "sbc-wt",
             "api_env": "production",
             "api_version": "0.1",
@@ -71,6 +88,13 @@ def lambda_handler(event, context):
             "results_count": len(office_ids),
             "data": api_response_data
         },default=str)
+        headers = {"content-type": "application/json"}
+            
+    # Return the API response data
+    return {
+        "statusCode": 200,
+        "headers": headers,
+        "body": body
     }
 
 
@@ -197,3 +221,14 @@ def query_elasticsearch_realtime(office_ids):
         results_list.append(office_result)
         
     return results_list
+    
+    
+def build_wait_times_graph(api_response_data):
+    graph = (f"<div><p><strong>Wait Times</strong><br>"
+        f"Number of Customers Currently in Line: "
+        f"{ str(api_response_data[0]['current_line_length']) }"
+        f"</p><p>Estimated Wait Time in Minutes: "
+        f"{ str(api_response_data[0]['estimated_wait'])  }"
+        f"</p></div>")
+    return graph
+    
