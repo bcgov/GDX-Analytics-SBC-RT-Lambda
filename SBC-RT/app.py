@@ -6,7 +6,6 @@ import os
 import sys
 import psycopg2
 import datetime
-import matplotlib
 
 
 # Assign credentials and collector information
