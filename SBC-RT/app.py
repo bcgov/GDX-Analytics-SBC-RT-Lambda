@@ -222,12 +222,15 @@ def query_elasticsearch_realtime(office_ids):
     return results_list
     
     
+# This function generates an html snippet for loading onto Service BC 
+# Office pages in CMS Lite.
 def build_wait_times_graph(api_response_data):
-    graph = (f"<div><p><strong>Wait Times</strong><br>"
+    graph = (f"<div style=\"background-color: #f1f1f2;font-family: 'BC Sans', 'Noto Sans', Arial, 'sans serif';font-size: 16px;\">"
+        f"<p><strong>Wait Times</strong></p>"
         f"Number of Customers Currently in Line: "
         f"{ str(api_response_data[0]['current_line_length']) }"
         f"</p><p>Estimated Wait Time in Minutes: "
-        f"{ str(api_response_data[0]['estimated_wait'])  }"
+        f"{ str(api_response_data[0]['estimated_wait']) }"
         f"</p></div>")
     return graph
     
