@@ -225,7 +225,10 @@ def query_elasticsearch_realtime(office_ids):
 # This function generates an html snippet for loading onto Service BC 
 # Office pages in CMS Lite.
 def build_wait_times_graph(api_response_data):
-    wait = int(api_response_data[0]['estimated_wait'])
+    if api_response_data[0]['estimated_wait'] == "":
+        wait = 0
+    else:
+        wait = int(api_response_data[0]['estimated_wait'])
     hours = str(int(wait/60)).zfill(2)
     minutes = str(wait%60).zfill(2)
     graph = (f"<div style=\"background-color: #f1f1f2;font-family: 'BC Sans', 'Noto Sans', Arial, 'sans serif';font-size: 16px;\">"
