@@ -61,7 +61,7 @@ def lambda_handler(event, context):
         api_response_data.append({"office_id": office_id, "current_line_length": current_line_length, "estimated_wait": estimated_wait })
 
 
-    vis = ''
+    vis = False
     # Check if the api was querise for an visualization (html) response 
     if 'queryStringParameters' in event and 'vis' in event['queryStringParameters'] and event['queryStringParameters']['vis'].lower() == 'true':
         vis = True
@@ -225,12 +225,15 @@ def query_elasticsearch_realtime(office_ids):
 # This function generates an html snippet for loading onto Service BC 
 # Office pages in CMS Lite.
 def build_wait_times_graph(api_response_data):
+    wait = api_response_data[0]['estimated_wait']
+    hours = str(int(wait/60)).zfill(2)
+    minutes = (wait%60)
     graph = (f"<div style=\"background-color: #f1f1f2;font-family: 'BC Sans', 'Noto Sans', Arial, 'sans serif';font-size: 16px;\">"
         f"<p><strong>Wait Times</strong></p>"
         f"Number of Customers Currently in Line: "
         f"{ str(api_response_data[0]['current_line_length']) }"
-        f"</p><p>Estimated Wait Time in Minutes: "
-        f"{ str(api_response_data[0]['estimated_wait']) }"
+        f"</p><p>Estimated Wait Time in Minutes: " 
+        f"{ hours }:{ minutes }:00"
         f"</p></div>")
     return graph
     
