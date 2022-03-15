@@ -41,6 +41,7 @@ def lambda_handler(event, context):
     # Query Redshift and Elastic Search
     rs_query = "SELECT office_id, time_per AS time FROM servicebc.servetime;"
     rs_result = query_redshift(rs_query)
+  
     es_result = query_elasticsearch_realtime(office_ids)
 
     # Generate the API response using the data from Redshift and ElasticSearch
@@ -202,7 +203,7 @@ def query_elasticsearch_realtime(office_ids):
         agent_list = []
         for event in events:
             # pull out any agent id that appears in the result set from the last hour
-            agent_list.append(event['contexts_ca_bc_gov_cfmspoc_agent_3'][0]['agent_id'])
+            agent_list.append(event['contexts_ca_bc_gov_cfmspoc_agent_4'][0]['agent_id'])
             
         # Get the unique set of agent IDs for the last hour
         num_agents = len(list(set(agent_list)))
