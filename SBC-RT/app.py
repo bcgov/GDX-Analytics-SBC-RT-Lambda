@@ -16,6 +16,7 @@ REDSHIFT_USER = os.environ['REDSHIFT_USER']
 REDSHIFT_PASSWD = os.environ['REDSHIFT_PASSWD']
 REDSHIFT_PORT = os.environ['REDSHIFT_PORT']
 REDSHIFT_ENDPOINT = os.environ['REDSHIFT_ENDPOINT']
+API_ENV = os.environ['API_ENV']
 
 
 with open('./serviceBCOfficeList.json') as json_file:
@@ -82,7 +83,7 @@ def generate_api_response(office_ids,api_response_data,vis):
     else:
         body = json.dumps({
             "api_name": "sbc-wt",
-            "api_env": "production",
+            "api_env": API_ENV,
             "api_version": "0.1",
             "response_tstamp": datetime.datetime.now(),
             "results_count": len(office_ids),
