@@ -16,6 +16,7 @@ REDSHIFT_USER = os.environ['REDSHIFT_USER']
 REDSHIFT_PASSWD = os.environ['REDSHIFT_PASSWD']
 REDSHIFT_PORT = os.environ['REDSHIFT_PORT']
 REDSHIFT_ENDPOINT = os.environ['REDSHIFT_ENDPOINT']
+API_ENV = os.environ['API_ENV']
 
 
 with open('./serviceBCOfficeList.json') as json_file:
@@ -41,6 +42,7 @@ def lambda_handler(event, context):
     # Query Redshift and Elastic Search
     rs_query = "SELECT office_id, time_per AS time FROM servicebc.servetime;"
     rs_result = query_redshift(rs_query)
+  
     es_result = query_elasticsearch_realtime(office_ids)
 
     # Generate the API response using the data from Redshift and ElasticSearch
@@ -81,7 +83,7 @@ def generate_api_response(office_ids,api_response_data,vis):
     else:
         body = json.dumps({
             "api_name": "sbc-wt",
-            "api_env": "production",
+            "api_env": API_ENV,
             "api_version": "0.1",
             "response_tstamp": datetime.datetime.now(),
             "results_count": len(office_ids),
@@ -202,7 +204,7 @@ def query_elasticsearch_realtime(office_ids):
         agent_list = []
         for event in events:
             # pull out any agent id that appears in the result set from the last hour
-            agent_list.append(event['contexts_ca_bc_gov_cfmspoc_agent_3'][0]['agent_id'])
+            agent_list.append(event['contexts_ca_bc_gov_cfmspoc_agent_4'][0]['agent_id'])
             
         # Get the unique set of agent IDs for the last hour
         num_agents = len(list(set(agent_list)))
