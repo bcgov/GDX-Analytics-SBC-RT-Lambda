@@ -22,21 +22,27 @@ API_ENV = os.environ['API_ENV']
 with open('./serviceBCOfficeList.json') as json_file:
     # Get the list of Service Centers and their IDs
     service_centers = json.load(json_file)
+    
 
 def lambda_handler(event, context):
 
     # To access query string parameters: event['queryStringParameters']['param']
     # To access path parameters: event['pathParameters']['param']
     
-    
+    all_offices = False
     office_ids = []
     # Retrieve any office id's from query string parameters
     if 'queryStringParameters' in event:
         if 'id' in event['queryStringParameters']:
             office_ids = event['queryStringParameters']['id'].split(",")
+        else:
+            for service_center in service_centers:
+                office_ids.append(service_center['cfms_poc.office_id'])
+                all_offices = True
     else:
         for service_center in service_centers:
             office_ids.append(service_center['cfms_poc.office_id'])
+            all_offices = True
     
     
     # Query Redshift and Elastic Search
@@ -62,23 +68,20 @@ def lambda_handler(event, context):
             
         api_response_data.append({"office_id": office_id, "current_line_length": current_line_length, "estimated_wait": estimated_wait })
 
-
     vis = False
-    # Check if the api was querise for an visualization (html) response 
+    # Check if the api was queried for a visualization (html) response 
     if 'queryStringParameters' in event and 'vis' in event['queryStringParameters'] and event['queryStringParameters']['vis'].lower() == 'true':
         vis = True
 
-    return generate_api_response(office_ids,api_response_data,vis)
+    return generate_api_response(office_ids,api_response_data,vis,all_offices)
 
     
 # Generate either a JSON response or a html response based on the 
 # query string parameters
-def generate_api_response(office_ids,api_response_data,vis):
+def generate_api_response(office_ids,api_response_data,vis,all_offices):
     # check if this is a visualization request
-    headers = ''
-    body = ''
     if vis:
-        body = build_wait_times_graph(api_response_data)
+        body = build_wait_times_graph(api_response_data,all_offices)
         headers = {"content-type": "text/html"}
     else:
         body = json.dumps({
@@ -226,19 +229,48 @@ def query_elasticsearch_realtime(office_ids):
     
 # This function generates an html snippet for loading onto Service BC 
 # Office pages in CMS Lite.
-def build_wait_times_graph(api_response_data):
-    if api_response_data[0]['estimated_wait'] == "":
-        wait = 0
-    else:
-        wait = int(api_response_data[0]['estimated_wait'])
-    hours = str(int(wait/60)).zfill(2)
-    minutes = str(wait%60).zfill(2)
-    graph = (f"<div style=\"background-color: #f1f1f2;font-family: 'BC Sans', 'Noto Sans', Arial, 'sans serif';font-size: 16px;\">"
-        f"<p><strong>Wait Times</strong></p>"
-        f"Number of Customers Currently in Line: "
-        f"{ str(api_response_data[0]['current_line_length']) }"
-        f"</p><p>Estimated Wait Time in Minutes: " 
-        f"{ hours }:{ minutes }:00"
-        f"</p></div>")
+def build_wait_times_graph(api_response_data,all_offices):
+    graph = ''
+    if all_offices:
+        graph += f"<div style=\"background-color: #f1f1f2;font-family: 'BC Sans', 'Noto Sans', Arial, 'sans serif';font-size: 16px;\">"
+        for office in api_response_data:
+            office_name = ''
+            for center in service_centers:
+                if int(center["cfms_poc.office_id"]) == int(office['office_id']):
+                    office_name = center["cfms_poc.office_name"]
+                    
+                    
+            link="https://www2.gov.bc.ca/gov/content/governments/organizational-structure/ministries-organizations/ministries/citizens-services/servicebc/service-bc-location-"
+            link+=office_name.lower().replace(' ','-')
+            
+            if office['estimated_wait'] == "":
+                wait = 0
+            else:
+                wait = int(office['estimated_wait'])
+            hours = str(int(wait/60)).zfill(2)
+            minutes = str(wait%60).zfill(2)
+            graph += (f"<div><p><a href={link}>{office_name}</a></strong></p>"
+                     f"<p><strong>Wait Times</strong></p>"
+                     f"Number of Customers Currently in Line: "
+                     f"{ str(office['current_line_length']) }"
+                     f"</p><p>Estimated Wait Time in Minutes: " 
+                     f"{ hours }:{ minutes }:00"
+                     f"</p></div>")
+        graph+=f"</p></div>"
+    else:    
+        for office in api_response_data:
+            if office['estimated_wait'] == "":
+                wait = 0
+            else:
+                wait = int(office['estimated_wait'])
+            hours = str(int(wait/60)).zfill(2)
+            minutes = str(wait%60).zfill(2)
+            graph += (f"<div style=\"background-color: #f1f1f2;font-family: 'BC Sans', 'Noto Sans', Arial, 'sans serif';font-size: 16px;\">"
+                f"<p><strong>Wait Times</strong></p>"
+                f"Number of Customers Currently in Line: "
+                f"{ str(office['current_line_length']) }"
+                f"</p><p>Estimated Wait Time in Minutes: " 
+                f"{ hours }:{ minutes }:00"
+                f"</p></div>")
     return graph
     
