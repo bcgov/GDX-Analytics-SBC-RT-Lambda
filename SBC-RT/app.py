@@ -7,6 +7,7 @@ import sys
 import psycopg2
 import datetime
 
+# May 30, 2025 - GDXDSD-7437 - Test comment to check if GitHub Actions workflow triggers on push
 
 # Assign credentials and collector information
 endpoint = os.environ['ES_ENDPOINT']
