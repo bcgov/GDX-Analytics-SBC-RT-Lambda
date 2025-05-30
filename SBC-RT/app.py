@@ -9,6 +9,8 @@ import datetime
 
 # May 30, 2025 - GDXDSD-7437 - Test comment to check if GitHub Actions workflow triggers on push
 
+# May 30, 2025 - Test comment #2 to check if new ACCESS KEY works.
+
 # Assign credentials and collector information
 endpoint = os.environ['ES_ENDPOINT']
 index = os.environ['ES_INDEX']
