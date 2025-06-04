@@ -9,6 +9,19 @@ import datetime
 import boto3
 
 
+# To fetch Redshift password from AWS Secret Manager
+def get_redshift_password():
+    client = boto3.client('secretsmanager', region_name='ca-central-1')
+    try:
+        response = client.get_secret_value(SecretId='SBC-RT-REDSHIFT-PASSWORD')
+        secret = json.loads(response['SecretString'])
+        print("Successfully retrieved Redshift password from AWS Secrets Manager.")
+        return secret['REDSHIFT_PASSWD']
+    except Exception as e:
+        print(f"Error retrieving secret: {e}")
+        raise e
+
+
 # Assign credentials and collector information
 endpoint = os.environ['ES_ENDPOINT']
 index = os.environ['ES_INDEX']
@@ -26,18 +39,6 @@ API_ENV = os.environ['API_ENV']
 with open('./serviceBCOfficeList.json') as json_file:
     # Get the list of Service Centers and their IDs
     service_centers = json.load(json_file)
-    
-# To fetch Redshift password from AWS Secret Manager
-def get_redshift_password():
-    client = boto3.client('secretsmanager', region_name='ca-central-1')
-    try:
-        response = client.get_secret_value(SecretId='SBC-RT-REDSHIFT-PASSWORD')
-        secret = json.loads(response['SecretString'])
-        print("Successfully retrieved Redshift password from AWS Secrets Manager.")
-        return secret['REDSHIFT_PASSWD']
-    except Exception as e:
-        print(f"Error retrieving secret: {e}")
-        raise e
 
 
 def lambda_handler(event, context):
