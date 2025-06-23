@@ -9,23 +9,27 @@ import datetime
 import boto3
 
 
-# To fetch Redshift password from AWS Secret Manager
-""" def get_redshift_password():
-    client = boto3.client('secretsmanager', region_name='ca-central-1')
-    try:
-        response = client.get_secret_value(SecretId='SBC-RT-REDSHIFT-PASSWORD')
-        secret = json.loads(response['SecretString'])
-        print("Successfully retrieved Redshift password from AWS Secrets Manager.")
-        return secret['REDSHIFT_PASSWD']
-    except Exception as e:
-        print(f"Error retrieving secret: {e}")
-        raise e """
+# Utility function to retrieve a specific key from an AWS Secrets Manager secret.
 
 def get_secret_value(secret_name, key):
-    client = boto3.client('secretsmanager')
+    """
+    Returns the requested AWS Secret
+
+    Args:
+        secret_name (str): The name of the AWS Secrets Manager secret
+        key (str): The key inside the secret's key-value pair
+
+    Returns:
+        str: The requested secret value
+
+    Raises:
+        Exception: If there is an issue accessing the secret
+    """
+    client = boto3.client('secretsmanager', region_name='ca-central-1')
     try:
         response = client.get_secret_value(SecretId=secret_name)
         secret = json.loads(response['SecretString'])
+        print(f"Successfully retrieved key '{key}' from secret '{secret_name}'")
         return secret[key]
     except Exception as e:
         print(f"Error retrieving secret: {e}")
@@ -37,7 +41,6 @@ endpoint = os.environ['ES_ENDPOINT']
 index = os.environ['ES_INDEX']
 REDSHIFT_DATABASE = os.environ['REDSHIFT_DATABASE']
 REDSHIFT_USER = os.environ['REDSHIFT_USER']
-# REDSHIFT_PASSWD = get_redshift_password()
 REDSHIFT_PASSWD = get_secret_value('SBC-RT-REDSHIFT-PASSWORD', 'REDSHIFT_PASSWD')
 
 
