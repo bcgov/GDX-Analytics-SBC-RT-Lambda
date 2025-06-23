@@ -10,7 +10,7 @@ import boto3
 
 
 # To fetch Redshift password from AWS Secret Manager
-def get_redshift_password():
+""" def get_redshift_password():
     client = boto3.client('secretsmanager', region_name='ca-central-1')
     try:
         response = client.get_secret_value(SecretId='SBC-RT-REDSHIFT-PASSWORD')
@@ -19,7 +19,17 @@ def get_redshift_password():
         return secret['REDSHIFT_PASSWD']
     except Exception as e:
         print(f"Error retrieving secret: {e}")
-        raise e
+        raise e """
+
+def get_secret_value(secret_name, key):
+    client = boto3.client('secretsmanager')
+    try:
+        response = client.get_secret_value(SecretId=secret_name)
+        secret = json.loads(response['SecretString'])
+        return secret[key]
+    except Exception as e:
+        print(f"Error retrieving secret: {e}")
+        raise
 
 
 # Assign credentials and collector information
@@ -27,9 +37,9 @@ endpoint = os.environ['ES_ENDPOINT']
 index = os.environ['ES_INDEX']
 REDSHIFT_DATABASE = os.environ['REDSHIFT_DATABASE']
 REDSHIFT_USER = os.environ['REDSHIFT_USER']
-#REDSHIFT_PASSWD = os.environ['REDSHIFT_PASSWD']
-# To fetch Redshift password from AWS Secret Manager
-REDSHIFT_PASSWD = get_redshift_password()
+# REDSHIFT_PASSWD = get_redshift_password()
+REDSHIFT_PASSWD = get_secret_value('SBC-RT-REDSHIFT-PASSWORD', 'REDSHIFT_PASSWD')
+
 
 REDSHIFT_PORT = os.environ['REDSHIFT_PORT']
 REDSHIFT_ENDPOINT = os.environ['REDSHIFT_ENDPOINT']
