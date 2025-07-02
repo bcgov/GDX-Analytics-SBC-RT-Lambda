@@ -6,6 +6,34 @@ import os
 import sys
 import psycopg2
 import datetime
+import boto3
+
+
+# Utility function to retrieve a specific key from an AWS Secrets Manager secret.
+
+def get_secret_value(secret_name, key):
+    """
+    Returns the requested AWS Secret
+
+    Args:
+        secret_name (str): The name of the AWS Secrets Manager secret
+        key (str): The key inside the secret's key-value pair
+
+    Returns:
+        str: The requested secret value
+
+    Raises:
+        Exception: If there is an issue accessing the secret
+    """
+    client = boto3.client('secretsmanager', region_name='ca-central-1')
+    try:
+        response = client.get_secret_value(SecretId=secret_name)
+        secret = json.loads(response['SecretString'])
+        print(f"Successfully retrieved key '{key}' from secret '{secret_name}'")
+        return secret[key]
+    except Exception as e:
+        print(f"Error retrieving secret: {e}")
+        raise
 
 
 # Assign credentials and collector information
@@ -13,7 +41,9 @@ endpoint = os.environ['ES_ENDPOINT']
 index = os.environ['ES_INDEX']
 REDSHIFT_DATABASE = os.environ['REDSHIFT_DATABASE']
 REDSHIFT_USER = os.environ['REDSHIFT_USER']
-REDSHIFT_PASSWD = os.environ['REDSHIFT_PASSWD']
+REDSHIFT_PASSWD = get_secret_value('SBC-RT-REDSHIFT-PASSWORD', 'REDSHIFT_PASSWD')
+
+
 REDSHIFT_PORT = os.environ['REDSHIFT_PORT']
 REDSHIFT_ENDPOINT = os.environ['REDSHIFT_ENDPOINT']
 API_ENV = os.environ['API_ENV']
@@ -22,7 +52,7 @@ API_ENV = os.environ['API_ENV']
 with open('./serviceBCOfficeList.json') as json_file:
     # Get the list of Service Centers and their IDs
     service_centers = json.load(json_file)
-    
+
 
 def lambda_handler(event, context):
 
