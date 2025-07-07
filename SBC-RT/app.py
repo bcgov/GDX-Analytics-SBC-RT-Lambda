@@ -8,7 +8,6 @@ import psycopg2
 import datetime
 import boto3
 
-
 # Utility function to retrieve a specific key from an AWS Secrets Manager secret.
 
 def get_secret_value(secret_name, key):
@@ -34,8 +33,7 @@ def get_secret_value(secret_name, key):
     except Exception as e:
         print(f"Error retrieving secret: {e}")
         raise
-
-
+        
 # Assign credentials and collector information
 endpoint = os.environ['ES_ENDPOINT']
 index = os.environ['ES_INDEX']
