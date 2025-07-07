@@ -266,4 +266,4 @@ def build_wait_times_graph(api_response_data):
         f"{ hours }:{ minutes }:00"
         f"</p></div>")
     return graph
-    
+  
