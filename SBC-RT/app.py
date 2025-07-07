@@ -33,30 +33,6 @@ def get_secret_value(secret_name, key):
     except Exception as e:
         print(f"Error retrieving secret: {e}")
         raise
-
-def get_secret_value(secret_name, key):
-    """
-    Returns the requested AWS Secret
-
-    Args:
-        secret_name (str): The name of the AWS Secrets Manager secret
-        key (str): The key inside the secret's key-value pair
-
-    Returns:
-        str: The requested secret value
-
-    Raises:
-        Exception: If there is an issue accessing the secret
-    """
-    client = boto3.client('secretsmanager', region_name='ca-central-1')
-    try:
-        response = client.get_secret_value(SecretId=secret_name)
-        secret = json.loads(response['SecretString'])
-        print(f"Successfully retrieved key '{key}' from secret '{secret_name}'")
-        return secret[key]
-    except Exception as e:
-        print(f"Error retrieving secret: {e}")
-        raise
         
 # Assign credentials and collector information
 endpoint = os.environ['ES_ENDPOINT']
