@@ -8,6 +8,8 @@ import psycopg2
 import datetime
 import boto3
 
+# TEST Comment: Confirm pipeline deployment after permissions fix
+
 def get_secret_value(secret_name, key):
     """
     Returns the requested AWS Secret
@@ -23,6 +25,7 @@ def get_secret_value(secret_name, key):
         Exception: If there is an issue accessing the secret
     """
     client = boto3.client('secretsmanager', region_name='ca-central-1')
+
     try:
         response = client.get_secret_value(SecretId=secret_name)
         secret = json.loads(response['SecretString'])
