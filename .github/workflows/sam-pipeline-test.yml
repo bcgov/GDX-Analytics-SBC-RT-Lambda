@@ -2,6 +2,10 @@ on:
   push:
     branches:
       - test
+
+permissions:
+  contents: read
+
 jobs:
   build-deploy:
     runs-on: ubuntu-latest
