@@ -8,8 +8,6 @@ import psycopg2
 import datetime
 import boto3
 
-# TEST Comment: Confirm pipeline deployment after permissions fix
-
 def get_secret_value(secret_name, key):
     """
     Returns the requested AWS Secret
